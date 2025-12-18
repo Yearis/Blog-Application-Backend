@@ -1,16 +1,42 @@
 USE `mydatabase`;
 
 -- 1. Drop tables in reverse order (Child first, then Parent)
+DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS posts;
+DROP TABLE IF EXISTS users_roles; 
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles; 
+
+-- Our ROLES Table 
+CREATE TABLE IF NOT EXISTS roles (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL UNIQUE
+)AUTO_INCREMENT = 1;
 
 -- Our USERS Table
 CREATE TABLE IF NOT EXISTS users (
 	id BIGINT  AUTO_INCREMENT PRIMARY KEY,
-    user_name VARCHAR(20) NOT NULL UNIQUE,
+    username VARCHAR(20) NOT NULL UNIQUE,
 	email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    about VARCHAR(255) DEFAULT 'Hey there! I am using the Blog App.'
+)AUTO_INCREMENT = 10001;
+
+-- Our Connector Table
+CREATE TABLE IF NOT EXISTS users_roles (
+	user_id BIGINT NOT NULL,
+    role_id BIGINT NOT NULL,
+    
+    PRIMARY KEY (user_id, role_id),
+    
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+    
+    FOREIGN KEY (role_id)
+    REFERENCES roles(id)
+    ON DELETE CASCADE
 );
 
 -- Our POSTS Table
@@ -27,7 +53,7 @@ CREATE TABLE IF NOT EXISTS posts (
     FOREIGN KEY(user_id)
     REFERENCES users(id)
     ON DELETE SET NULL -- so that when user is deleted, its posts shouldn't be deleted
-);
+)AUTO_INCREMENT = 10001;
 
 -- Our Comments Table
 CREATE TABLE IF NOT EXISTS comments (
@@ -54,4 +80,41 @@ CREATE TABLE IF NOT EXISTS comments (
     FOREIGN KEY(parent_id)
     REFERENCES comments(id)
     ON DELETE CASCADE -- so that when the parent comment is deleted, its replies are also deleted
-);
+)AUTO_INCREMENT = 10001;
+
+-- Our LIKES Table 
+CREATE TABLE IF NOT EXISTS likes (
+	id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    created_date DATETIME(6),
+    user_id BIGINT NOT NULL,
+    post_id BIGINT, -- this can be null as like can be on comment
+    comment_id BIGINT, -- this can be null as like can be on post
+    
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE,
+    
+    FOREIGN KEY (post_id)
+    REFERENCES posts(id)
+    ON DELETE CASCADE,
+    
+    FOREIGN KEY (comment_id)
+    REFERENCES comments(id)
+    ON DELETE CASCADE,
+    
+    CONSTRAINT user_post_like 
+    UNIQUE (user_id, post_id),
+    
+    CONSTRAINT user_comment_like 
+    UNIQUE (user_id, comment_id)    
+)AUTO_INCREMENT = 10001;
+
+-- Our Roles 
+INSERT INTO roles (name) VALUES ('ROLE_USER');
+INSERT INTO roles (name) VALUES ('ROLE_ADMIN');
+
+-- Our User
+INSERT INTO users (username, email, password) 
+VALUES ('DemoUser', 'demo@test.com', 'TestPass123!');
+
+INSERT INTO users_roles (user_id, role_id) VALUES (10001, 1);
