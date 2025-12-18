@@ -48,7 +48,7 @@ public class SecurityConfig {
                 configurer
                         // public endpoints
                         .requestMatchers("/api/auth/**").permitAll() // these are for authentication(login/registration)
-                        .requestMatchers("/{userId}/posts").permitAll()
+                        .requestMatchers("/api/users/{userId}/posts").permitAll()
                         .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**",
                                 "/swagger-resources/**", "/webjars/**", "/docs").permitAll()
 
