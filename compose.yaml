@@ -1,31 +1,53 @@
 # version for our compose.yaml file
 version: '3.8'
 
-#   List of my technologies used
+# List of my technologies used
 services:
 
-#   1st technology MySQL we fix its version to 8.0
-  mysql:
-    image: 'mysql:8.0'
+    # 1st technology is MySQL we fix its version to 8.0
+    mysql:
+        image: 'mysql:8.0'
 
-#     we set our credentials
-    environment:
-      - 'MYSQL_DATABASE=${MYSQL_DB}'
-      - 'MYSQL_PASSWORD=${MYSQL_PASS}'
-      - 'MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASS}'
-      - 'MYSQL_USER=${MYSQL_USER}'
+        # we set our credentials
+        environment:
+            MYSQL_DATABASE: ${MYSQL_DB}
+            MYSQL_USER: ${MYSQL_USER}
+            MYSQL_PASSWORD: ${MYSQL_PASS}
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS}
 
-#     we set our port for our database
-    ports:
-      - '3307:3306'
+        # we set our port for our database
+        ports:
+          - '3307:3306'
 
-#     our storage for container
-    volumes:
-      - blog_db:/var/lib/mysql
+        # our storage for container
+        volumes:
+          - blog_db:/var/lib/mysql
+
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            timeout: 5s
+            retries: 10
+
+    # 2nd technology is Java Spring-boot
+    app:
+        build: .
+        container_name: blog-app
+        ports:
+            -   '8080:8080'
+        depends_on:
+            mysql:
+                condition: service_healthy
+
+        # our credentials
+        environment:
+            DB_URL: jdbc:mysql://mysql:3306/${MYSQL_DB}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+            DB_USERNAME: ${DB_USERNAME}
+            DB_PASSWORD: ${DB_PASSWORD}
+            JWT_SECRET: ${JWT_SECRET}
 
 # we declare our storage
 volumes:
-  blog_db:
+    blog_db:
 
 # commands
 #   To run the container: docker-compose up -d
