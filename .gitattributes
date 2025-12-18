@@ -1,0 +1,7 @@
+# This file makes github recognize SQL and Docker
+
+*.sql linguist-detectable=true
+*.sql linguist-language=SQL
+
+compose.yaml linguist-detectable=true
+compose.yaml linguist-language=YAML
