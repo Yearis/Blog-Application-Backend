@@ -4,6 +4,7 @@ import com.yearis.blog_application.payload.request.PasswordChangeRequest;
 import com.yearis.blog_application.payload.request.UserUpdateRequest;
 import com.yearis.blog_application.payload.response.CommentResponse;
 import com.yearis.blog_application.payload.response.PostResponse;
+import com.yearis.blog_application.payload.response.UserProfileResponse;
 import com.yearis.blog_application.service.CommentService;
 import com.yearis.blog_application.service.PostService;
 import com.yearis.blog_application.service.UserService;
@@ -58,6 +59,17 @@ public class UserController {
         return new ResponseEntity<>("Success", HttpStatus.OK);
     }
 
+    // update about
+    @Operation(summary = "Update about section", description = "Update the about/bio section of the current user")
+    @PutMapping("/about")
+    public ResponseEntity<String> updateAbout(
+            @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
+
+        userService.updateAbout(userUpdateRequest);
+
+        return new ResponseEntity<>("Success", HttpStatus.OK);
+    }
+
     // update password
     @Operation(summary = "Update password", description = "Update password of an existing user")
     @PutMapping("/password")
@@ -71,6 +83,18 @@ public class UserController {
 
     /// --- Custom Methods ---
 
+    // to search for a user. (Public)
+    @Operation(summary = "Search users", description = "Search for users by username.")
+    @GetMapping("/search")
+    public ResponseEntity<List<UserProfileResponse>> searchUsers(
+            @Parameter(description = "The username to search for") @RequestParam("username") String username) {
+
+        // logic to search users
+        List<UserProfileResponse> result = userService.searchUsers(username);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     // to show the posts created by a user. (Public)
     @Operation(summary = "Get posts by user", description = "Get all the posts created by user. This is a public api anyone can use to see a users created posts")
     @GetMapping("/{userId}/posts")
@@ -82,6 +106,17 @@ public class UserController {
         List<PostResponse> posts = postService.findPostByUserId(userId, pageNo, pageSize);
 
         return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    // to get the profile of a user. (Public)
+    @Operation(summary = "Get User Profile", description = "Get the public profile (Username, About, Join Date) of any user by ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<UserProfileResponse> getUserProfile(
+            @Parameter(description = "ID of the user to fetch") @PathVariable Long id) {
+
+        UserProfileResponse profile = userService.getPublicProfile(id);
+
+        return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
     // to get the comments created by user. (Private)

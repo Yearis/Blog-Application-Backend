@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(20) NOT NULL UNIQUE,
 	email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    about VARCHAR(255) DEFAULT 'Hey there! I am using the Blog App.'
+    about VARCHAR(255) DEFAULT 'Hey there! I am using the Blog App.',
+    joined_date DATETIME(6) DEFAULT CURRENT_TIMESTAMP(6)
 )AUTO_INCREMENT = 10001;
 
 -- Our Connector Table

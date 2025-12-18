@@ -27,4 +27,6 @@ public class RegisterRequest {
     @Size(min = 8, max = 30, message = "Password must be at least 8 characters")
     // String as user will enter only a plain string not Bcrypt password
     private String password;
+
+    private String about;
 }

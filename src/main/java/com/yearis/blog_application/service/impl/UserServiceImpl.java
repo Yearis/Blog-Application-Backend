@@ -2,8 +2,10 @@ package com.yearis.blog_application.service.impl;
 
 import com.yearis.blog_application.entity.User;
 import com.yearis.blog_application.exception.BlogAPIException;
+import com.yearis.blog_application.exception.ResourceNotFoundException;
 import com.yearis.blog_application.payload.request.PasswordChangeRequest;
 import com.yearis.blog_application.payload.request.UserUpdateRequest;
+import com.yearis.blog_application.payload.response.UserProfileResponse;
 import com.yearis.blog_application.repository.UserRepository;
 import com.yearis.blog_application.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -108,6 +111,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public String updateAbout(UserUpdateRequest userUpdateRequest) {
+
+        if (userUpdateRequest.getAbout() == null) {
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "About section cannot be null");
+        }
+
+        User currentUser = currentUser();
+
+        // now we set the about
+        currentUser.setAbout(userUpdateRequest.getAbout());
+
+        // now we can save the user
+        userRepository.save(currentUser);
+
+        return "About section updated";
+    }
+
+    @Override
+    @Transactional
     public String updatePassword(PasswordChangeRequest passwordChangeRequest) {
 
         // first we wanna make sure that user is logged in for this else password cant be changed
@@ -137,6 +159,40 @@ public class UserServiceImpl implements UserService {
         userRepository.save(currentUser);
 
         return "Password updated!";
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserProfileResponse> searchUsers(String username) {
+
+        // this feature doesn't require a user to be logged in
+        List<User> users = userRepository.findByUsernameContaining(username);
+
+        return users.stream()
+                .map(user -> {
+                    UserProfileResponse response = new UserProfileResponse();
+                    response.setId(user.getId());
+                    response.setUsername(user.getUsername());
+                    response.setAbout(user.getAbout());
+                    response.setJoinedDate(user.getJoinedDate());
+                    return response;
+                }).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserProfileResponse getPublicProfile(Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+
+        UserProfileResponse response = new UserProfileResponse();
+        response.setId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setAbout(user.getAbout());
+        response.setJoinedDate(user.getJoinedDate());
+
+        return response;
     }
 
 }

@@ -4,6 +4,7 @@ import com.yearis.blog_application.security.JwtAuthenticationEntryPoint;
 import com.yearis.blog_application.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,8 +48,18 @@ public class SecurityConfig {
         http.authorizeHttpRequests(configurer ->
                 configurer
                         // public endpoints
-                        .requestMatchers("/api/auth/**").permitAll() // these are for authentication(login/registration)
-                        .requestMatchers("/api/users/{userId}/posts").permitAll()
+
+                        // authentication login/register
+                        .requestMatchers("/api/auth/**").permitAll()
+
+                        // search for a users profile and see his created posts
+                        .requestMatchers(HttpMethod.GET, "/api/users/search",
+                                "/api/users/*", "/api/users/*/posts").permitAll()
+
+                        // this for reading posts or comments only
+                        .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+
+                        // swagger docs
                         .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**",
                                 "/swagger-resources/**", "/webjars/**", "/docs").permitAll()
 

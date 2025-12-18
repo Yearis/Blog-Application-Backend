@@ -6,7 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -40,6 +42,14 @@ public class User {
              message = "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one special character.")
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "about")
+    @Builder.Default
+    private String about = "Hey there! I am using the Blog App.";
+
+    @CreationTimestamp
+    @Column(name = "joined_date", nullable = false, updatable = false)
+    private LocalDateTime joinedDate;
 
     // this is for relationship to user from role
 
