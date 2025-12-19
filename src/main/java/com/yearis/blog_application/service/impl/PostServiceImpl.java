@@ -75,7 +75,7 @@ public class PostServiceImpl implements PostService {
             response.setAuthorId(null);
 
             // Check content to decide if it was "Post Deleted" or "Account Deleted"
-            if ("[deleted by user]".equals(post.getContent())) {
+            if ("[deleted by user]".equals(post.getContent()) || "[removed by admin]".equals(post.getContent())) {
                 response.setAuthorName("[removed]"); // User deleted the post
             } else {
                 response.setAuthorName("[deleted]"); // User deleted their account
@@ -235,7 +235,12 @@ public class PostServiceImpl implements PostService {
         boolean hasComments = commentRepository.existsByPostId(id);
         if (hasComments) {
 
-            post.setContent("[deleted by user]");
+            if (isAdmin && !isOwner) {
+                post.setContent("[removed by admin]"); // Admin removed it
+            } else {
+                post.setContent("[deleted by user]"); // User deleted it
+            }
+
             post.setAuthor(null);
             post.setEdited(true);
             postRepository.save(post);

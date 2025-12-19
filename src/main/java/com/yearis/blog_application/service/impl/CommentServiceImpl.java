@@ -84,7 +84,7 @@ public class CommentServiceImpl implements CommentService {
             response.setAuthorId(null);
 
             // Check body to decide label
-            if ("[deleted by user]".equals(comment.getBody())) {
+            if ("[deleted by user]".equals(comment.getBody()) || "[removed by admin]".equals(comment.getBody())) {
                 response.setAuthorName("[removed]"); // User deleted the comment
             } else {
                 response.setAuthorName("[deleted]"); // User deleted their account
@@ -288,8 +288,12 @@ public class CommentServiceImpl implements CommentService {
         // check if any replies in the list
         if (comment.getReplies() != null && !comment.getReplies().isEmpty()) {
 
-            // we soft delete it
-            comment.setBody("[deleted by user]");
+            if ((isAdmin || isPostOwner) && !isCommentOwner) {
+                comment.setBody("[removed by admin]"); // Admin or Post Owner removed it
+            } else {
+                comment.setBody("[deleted by user]"); // Author deleted it
+            }
+
             comment.setAuthor(null);
             comment.setEdited(true);
 

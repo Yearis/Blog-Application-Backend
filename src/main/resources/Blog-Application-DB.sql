@@ -1,14 +1,4 @@
-USE `mydatabase`;
-
--- 1. Drop tables in reverse order (Child first, then Parent)
-DROP TABLE IF EXISTS likes;
-DROP TABLE IF EXISTS comments;
-DROP TABLE IF EXISTS posts;
-DROP TABLE IF EXISTS users_roles; 
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS roles; 
-
--- Our ROLES Table 
+-- Our ROLES Table
 CREATE TABLE IF NOT EXISTS roles (
 	id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30) NOT NULL UNIQUE
@@ -110,12 +100,21 @@ CREATE TABLE IF NOT EXISTS likes (
     UNIQUE (user_id, comment_id)    
 )AUTO_INCREMENT = 10001;
 
--- Our Roles 
-INSERT INTO roles (name) VALUES ('ROLE_USER');
-INSERT INTO roles (name) VALUES ('ROLE_ADMIN');
+-- Our Roles
+INSERT IGNORE INTO roles (id, name) VALUES (1, 'ROLE_ADMIN');
+INSERT IGNORE INTO roles (id, name) VALUES (2, 'ROLE_USER');
 
--- Our User
-INSERT INTO users (username, email, password) 
-VALUES ('DemoUser', 'demo@test.com', 'TestPass123!');
+-- Our Admin User
+INSERT IGNORE INTO users (id, username, email, password, about, joined_date)
+VALUES (
+           10001,
+           'Yearis',
+           'khush8751@gmail.com',
+           '$2a$10$9/3XwPNeHyNBkIwMEibeXOED5bIrAsZStKAKqHdSM0xec8FVO90Ie',
+           'I am the Admin User.',
+           NOW()
+       );
 
-INSERT INTO users_roles (user_id, role_id) VALUES (10001, 1);
+-- Assign admin and user role to me
+INSERT IGNORE INTO users_roles (user_id, role_id) VALUES (10001, 1);
+INSERT IGNORE INTO users_roles (user_id, role_id) VALUES (10001, 2);
