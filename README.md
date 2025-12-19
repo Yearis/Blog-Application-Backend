@@ -4,7 +4,7 @@ A robust, containerized RESTful API for a community blogging platform. Built wit
 
 The application features advanced data handling like **Reddit**, ensuring discussions remain even when users or posts are deleted.
 
-**[Live Demo on Render](LINK)**
+**[Live Demo on Render](https://blog-application-backend-nllp.onrender.com/blog-application/index.html)**
 
 ## ✨ Key Features
 
@@ -54,8 +54,6 @@ The application will start on port 8080.
 ### 📚 API Documentation
 Once the application is running, you can explore and test all endpoints using the interactive Swagger UI:
 
-[View API Docs](http://localhost:8080/blog-application/docs) 
-or 
-[Open Swagger UI](http://localhost:8080/blog-application/swagger-ui/index.html)
+[View API Docs](https://blog-application-backend-nllp.onrender.com/blog-application/swagger-ui/index.html)
 
 Created by 👨‍💻 [Yearis](https://github.com/Yearis)
