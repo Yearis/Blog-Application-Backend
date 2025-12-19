@@ -52,7 +52,8 @@ public class SecurityConfig {
                         // home page
                         .requestMatchers("/", "/blog-application",
                                 "/index.html", "/static/**",
-                                "/css/**", "/js/**").permitAll()
+                                "/css/**", "/js/**",
+                                "/actuator/**").permitAll()
 
                         // authentication login/register
                         .requestMatchers("/api/auth/**").permitAll()
