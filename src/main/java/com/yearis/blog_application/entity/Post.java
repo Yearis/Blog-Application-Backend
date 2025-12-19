@@ -25,12 +25,12 @@ public class Post {
     private Long id;
 
     @NotBlank(message = "Title cannot be empty")
-    @Size(min = 3, max = 50, message = "Title must be between 3 and 50 characters")
+    @Size(min = 10, max = 50, message = "Title must be between 10 and 50 characters")
     @Column(name = "title", nullable = false, length = 50)
     private String title;
 
     @NotBlank(message = "Content cannot be empty")
-    @Size(min = 5, max = 500)
+    @Size(min = 20, max = 5000)
     @Column(name = "content", columnDefinition = "TEXT") // allows long content
     private String content;
 

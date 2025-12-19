@@ -27,7 +27,7 @@ public class Comment {
     private Long id;
 
     @NotBlank(message = "Comment cannot be empty")
-    @Size(max = 250, message = "Comment must be less than 250 characters")
+    @Size(min = 2, max = 1000, message = "Comment must be less than 1000 characters")
     @Column(name = "body", columnDefinition = "TEXT")
     private String body;
 
