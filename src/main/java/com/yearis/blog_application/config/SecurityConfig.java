@@ -49,6 +49,11 @@ public class SecurityConfig {
                 configurer
                         // public endpoints
 
+                        // home page
+                        .requestMatchers("/", "/blog-application",
+                                "/index.html", "/static/**",
+                                "/css/**", "/js/**").permitAll()
+
                         // authentication login/register
                         .requestMatchers("/api/auth/**").permitAll()
 
@@ -61,7 +66,8 @@ public class SecurityConfig {
 
                         // swagger docs
                         .requestMatchers( "/swagger-ui/**", "/v3/api-docs/**",
-                                "/swagger-resources/**", "/webjars/**", "/docs").permitAll()
+                                "/swagger-resources/**", "/webjars/**",
+                                "/docs").permitAll()
 
                         .anyRequest().authenticated()
 
