@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus-Blog API</title>
+  <style>
+    :root {
+      /* Light Mode */
+      --bg-color: #ffffff;
+      --text-color: #24292e;
+      --code-bg: #f6f8fa;
+      --border-color: #e1e4e8;
+      --hero-bg: #f6f8fa;
+      --btn-bg: #2ea44f;
+      --btn-hover: #2c974b;
+      --link-color: #0366d6;
+      --quote-color: #6a737d;
+    }
+
+    [data-theme="dark"] {
+      /* Dark Mode */
+      --bg-color: #0d1117;
+      --text-color: #c9d1d9;
+      --code-bg: #161b22;
+      --border-color: #30363d;
+      --hero-bg: #161b22;
+      --btn-bg: #238636;
+      --btn-hover: #2ea043;
+      --link-color: #58a6ff;
+      --quote-color: #8b949e;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Toggle Button */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      color: var(--text-color);
+      transition: transform 0.2s;
+    }
+    .theme-toggle:hover { transform: scale(1.1); }
+
+    /* Hero */
+    .hero {
+      background-color: var(--hero-bg);
+      padding: 60px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.3s;
+    }
+    .hero h1 { margin: 0 0 10px 0; font-size: 2.5rem; }
+
+    .cta-button {
+      display: inline-block;
+      background-color: var(--btn-bg);
+      color: white;
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-top: 20px;
+      transition: background-color 0.2s;
+    }
+    .cta-button:hover { background-color: var(--btn-hover); }
+
+    /* Content */
+    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+    h1, h2, h3 { border-bottom: 1px solid var(--border-color); padding-bottom: 0.3em; margin-top: 24px; }
+    h3 { border-bottom: none; font-size: 1.25em; }
+
+    ul { padding-left: 2em; }
+    li { margin-bottom: 0.5em; }
+
+    code {
+      padding: 0.2em 0.4em;
+      background-color: var(--code-bg);
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 85%;
+    }
+
+    pre {
+      padding: 16px;
+      overflow: auto;
+      background-color: var(--code-bg);
+      border-radius: 6px;
+    }
+    pre code { background-color: transparent; padding: 0; }
+
+    a { color: var(--link-color); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .footer {
+      margin-top: 50px;
+      padding: 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--quote-color);
+    }
+
+    .badge-container { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">🌙</button>
+
+<div class="hero">
+  <h1>🚀 Nexus-Blog API</h1>
+  <p>A robust, containerized backend for community blogging.</p>
+  <a href="/blog-application/swagger-ui/index.html" class="cta-button">⚡ Test the API (Swagger UI)</a>
+</div>
+
+<div class="container">
+  <h1>🖋️ Blog Application Backend</h1>
+  <p>A robust, containerized RESTful API for a community blogging platform. Built with <strong>Spring Boot</strong>, secured with <strong>JWT</strong>, documented using <strong>Swagger</strong> and fully dockerized.</p>
+
+  <p>The application features advanced data handling like <strong>Reddit</strong>, ensuring discussions remain even when users or posts are deleted.</p>
+
+  <p><strong><a href="https://blog-application-backend-nllp.onrender.com">Live Demo on Render</a></strong></p>
+
+  <h2>✨ Key Features</h2>
+
+  <h3>🔄 Logic & Data Handling</h3>
+  <ul>
+    <li><strong>Persistent Threading (Reddit-Style):</strong> To keep conversations readable even after a user leaves, I implemented "Graceful Deletion." Instead of a hard DELETE, the database updates the content to [removed] while keeping the comment tree intact.</li>
+    <li><strong>Smart Engagement:</strong> I simplified the feature by automatically liking a post upon creation—because if you wrote it, you probably like it. I also implemented a Like Toggle to ensure users can only like a piece of content once.</li>
+    <li><strong>Toggle Likes:</strong> Users can toggle likes on posts and comments (ensuring one like per user).</li>
+  </ul>
+
+  <h3>🔍 Search & Discovery</h3>
+  <ul>
+    <li><strong>Fuzzy Search:</strong> Users can find posts using partial keywords (e.g., searching "Java" finds "Spring Boot a powerful Java Framework").</li>
+    <li><strong>Pagination:</strong> API endpoints support <code>pageNo</code> and <code>pageSize</code> which divides the data into pages so when a user fetches a post it's not overloaded. All fetch requests are paginated by default to prevent payload bloat. Users can control this via <code>?pageNo=0&pageSize=10</code> parameters.</li>
+    <li><strong>User Profiles:</strong> Public endpoints to fetch all posts by a specific user. But a user's liked post and comments along with his created comments are private.</li>
+  </ul>
+
+  <h3>🛡️ Security & Access</h3>
+  <ul>
+    <li><strong>JWT Authentication:</strong> Stateless security protecting write operations (Create/Update/Delete).</li>
+    <li><strong>Public Read Access:</strong> Unauthenticated users can view authenticate (register), look at people's post, and their profiles.</li>
+  </ul>
+
+  <h2>🛠 Tech Stack</h2>
+  <div class="badge-container">
+    <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java">
+    <img src="https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white" alt="Spring">
+    <img src="https://img.shields.io/badge/mysql-%2300f.svg?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
+    <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" alt="Docker">
+    <img src="https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens" alt="JWT">
+  </div>
+
+  <hr>
+
+  <h2>🚀 Quick Start</h2>
+  <p>Run the entire application (App + Database) instantly.</p>
+
+  <p><strong>1. Clone the repository</strong></p>
+  <pre><code>git clone https://github.com/Yearis/Blog-Application-Backend.git
+cd Blog-Application-Backend</code></pre>
+
+  <p><strong>2. Configure Environment</strong></p>
+  <p>Create a .env file in the root directory (refer to .env.example) and add your database and JWT secrets.</p>
+
+  <p><strong>3. Build & Run</strong></p>
+  <pre><code>docker-compose up --build</code></pre>
+  <p>The application will start on port 8080.</p>
+
+  <h3>📚 API Documentation</h3>
+  <p>Once the application is running, you can explore and test all endpoints using the interactive Swagger UI:</p>
+  <p><a href="/blog-application/swagger-ui/index.html">Open Swagger UI</a></p>
+</div>
+
+<div class="footer">
+  <p>Created by 👨‍💻 <a href="https://github.com/Yearis">Yearis</a></p>
+</div>
+
+<script>
+  const toggleBtn = document.getElementById('themeToggle');
+  const body = document.body;
+
+  if (localStorage.getItem('theme') === 'dark') {
+    body.setAttribute('data-theme', 'dark');
+    toggleBtn.textContent = '☀️';
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    if (body.getAttribute('data-theme') === 'dark') {
+      body.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+      toggleBtn.textContent = '🌙';
+    } else {
+      body.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+      toggleBtn.textContent = '☀️';
+    }
+  });
+</script>
+</body>
+</html>
